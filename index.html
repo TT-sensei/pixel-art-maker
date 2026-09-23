@@ -1,35 +1,134 @@
 <!doctype html>
-<html lang="ja"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f5f7fb"><title>ピクセルアートメーカー</title><link rel="stylesheet" href="style.css">
-</head><body>
-<header class="app-header"><div><p class="eyebrow">TT-sensei × edu-kit</p><h1>ピクセルアートメーカー</h1><p class="subtitle">1マスずつ、絵をつくろう。</p></div><button id="newBtn" class="ghost-btn">新しくつくる</button></header>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f7fb">
+<title>ピクセルアートメーカー</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div>
+    <p class="eyebrow">TT-sensei × edu-kit</p>
+    <h1>ピクセルアートメーカー</h1>
+    <p class="subtitle">1マスずつ、絵をつくろう。</p>
+  </div>
+  <button id="newBtn" class="ghost-btn">新しくつくる</button>
+</header>
+
 <main class="app-shell">
-<section class="intro-card"><div><h2>つくってみよう</h2><p id="guideText">16×16から始めて、写真を下絵にしながらドット絵をつくることもできます。</p></div><img class="navi-group" src="https://tt-sensei.github.io/navi-character-/assets/groups/group-standing.png" alt=""></section>
-<section class="mode-tabs"><button class="mode-tab active" data-mode="free">つくる</button><button class="mode-tab" data-mode="works">作品を見る</button></section>
+  <section class="intro-card">
+    <div>
+      <h2>つくってみよう</h2>
+      <p id="guideText">16×16から始めて、写真を下絵にしながらドット絵をつくることもできます。</p>
+    </div>
+    <img class="navi-group" src="https://tt-sensei.github.io/navi-character-/assets/groups/group-standing.png" alt="">
+  </section>
 
-<section id="editorPanel" class="editor-layout hidden">
+  <section class="mode-tabs">
+    <button class="mode-tab active" data-mode="free">つくる</button>
+    <button class="mode-tab" data-mode="works">作品を見る</button>
+  </section>
 
-<section class="editor-card"><div class="editor-top"><div><div class="section-label">キャンバス</div><div class="canvas-meta"><strong id="sizeLabel">16×16</strong><span id="cellCount">256マス</span></div></div><div class="size-actions"><button id="decreaseSizeBtn" class="tool-btn">− マスを減らす</button><button id="increaseSizeBtn" class="tool-btn">＋ マスを増やす</button></div><div class="editor-actions"><button id="undoBtn" class="tool-btn">↶ もどす</button><button id="redoBtn" class="tool-btn">↷ やりなおす</button></div></div>
-<div class="canvas-stage"><canvas id="pixelCanvas" aria-label="ピクセルアートキャンバス"></canvas></div>
-<div class="tools"><button class="tool-btn active" data-tool="draw">✎ 描く</button><button class="tool-btn" data-tool="erase">消す</button><button class="tool-btn" data-tool="fill">塗る</button><button class="tool-btn" data-tool="picker">色をひろう</button><button id="mirrorBtn" class="tool-btn">左右反転</button></div>
-<div class="underlay-area">
-<div class="section-label">下絵</div>
-<div class="underlay-controls">
-<label class="file-btn">写真を選ぶ<input id="underlayInput" type="file" accept="image/*" hidden></label>
-<button id="underlayToggleBtn" class="tool-btn" type="button">下絵を表示</button>
-<button id="underlayClearBtn" class="tool-btn" type="button">下絵を消す</button>
-</div>
-<div class="underlay-options">
-<label>大きさ <input id="underlayScale" type="range" min="0.5" max="2.5" step="0.05" value="1"><span id="underlayScaleLabel">100%</span></label>
-<label>左右 <input id="underlayX" type="range" min="-100" max="100" step="1" value="0"><span id="underlayXLabel">0%</span></label>
-<label>上下 <input id="underlayY" type="range" min="-100" max="100" step="1" value="0"><span id="underlayYLabel">0%</span></label>
-<label>透明度 <input id="underlayOpacity" type="range" min="0.1" max="0.8" step="0.05" value="0.35"><span id="underlayOpacityLabel">35%</span></label>
-</div>
-<div class="underlay-lock-row"><button id="underlayLockBtn" class="tool-btn" type="button">下絵を固定</button><button id="scrollLockBtn" class="tool-btn scroll-lock-btn" type="button">スクロールロック</button></div>
-<p class="underlay-note">写真はこの端末だけで下絵として使います。PNGには下絵を含めません。</p>
-</div><div class="palette-area"><div class="section-label">色</div><div id="palette" class="palette"></div><label class="custom-color">自分の色 <input id="colorInput" type="color" value="#111827"></label></div>
-<div class="save-row"><input id="workTitle" class="title-input" maxlength="30" placeholder="作品の名前"><button id="saveBtn" class="primary-btn">作品を保存</button><button id="pngBtn" class="secondary-btn">PNGで保存</button></div><p id="statusText" class="status" aria-live="polite"></p>
-</section></section>
-<section id="worksPanel" class="content-panel hidden"><div class="panel-heading"><div><h2>作品を見る</h2><p>この端末に保存した作品です。</p></div></div><div id="worksList" class="works-list"></div></section>
-</main><script src="data/examples.js"></script><script src="app.js"></script></body></html>
+  <section id="editorPanel" class="editor-layout hidden">
+    <section class="editor-card">
+      <div class="editor-top">
+        <div>
+          <div class="section-label">キャンバス</div>
+          <div class="canvas-meta">
+            <strong id="sizeLabel">16×16</strong>
+            <span id="cellCount">256マス</span>
+          </div>
+        </div>
+        <div class="editor-actions">
+          <button id="undoBtn" class="tool-btn">↶ もどす</button>
+          <button id="redoBtn" class="tool-btn">↷ やりなおす</button>
+        </div>
+      </div>
+
+      <div class="editor-workspace">
+        <section class="canvas-pane">
+          <div class="canvas-hint">
+            <span>タップ・ペンで色をぬる</span>
+            <span>指でスクロールせず、そのまま描けます</span>
+          </div>
+          <div class="canvas-stage">
+            <canvas id="pixelCanvas" aria-label="ピクセルアートキャンバス"></canvas>
+          </div>
+        </section>
+
+        <aside class="control-pane">
+          <section class="control-section">
+            <div class="section-label">サイズ</div>
+            <div class="size-actions">
+              <button id="decreaseSizeBtn" class="tool-btn">− マスを減らす</button>
+              <button id="increaseSizeBtn" class="tool-btn">＋ マスを増やす</button>
+            </div>
+          </section>
+
+          <section class="control-section">
+            <div class="section-label">道具</div>
+            <div class="tools">
+              <button class="tool-btn active" data-tool="draw">✎ 描く</button>
+              <button class="tool-btn" data-tool="erase">消す</button>
+              <button class="tool-btn" data-tool="fill">塗る</button>
+              <button class="tool-btn" data-tool="picker">色をひろう</button>
+              <button id="mirrorBtn" class="tool-btn">左右反転</button>
+            </div>
+          </section>
+
+          <section class="control-section palette-area">
+            <div class="section-label">色</div>
+            <div id="palette" class="palette"></div>
+            <label class="custom-color">自分の色 <input id="colorInput" type="color" value="#111827"></label>
+          </section>
+
+          <section class="control-section underlay-area">
+            <div class="section-label">下絵</div>
+            <div class="underlay-controls">
+              <label class="file-btn">写真を選ぶ<input id="underlayInput" type="file" accept="image/*" hidden></label>
+              <button id="underlayToggleBtn" class="tool-btn" type="button">下絵を表示</button>
+              <button id="underlayClearBtn" class="tool-btn" type="button">下絵を消す</button>
+            </div>
+
+            <div class="underlay-options">
+              <label><span>大きさ</span><input id="underlayScale" type="range" min="0.5" max="2.5" step="0.05" value="1"><strong id="underlayScaleLabel">100%</strong></label>
+              <label><span>左右</span><input id="underlayX" type="range" min="-100" max="100" step="1" value="0"><strong id="underlayXLabel">0%</strong></label>
+              <label><span>上下</span><input id="underlayY" type="range" min="-100" max="100" step="1" value="0"><strong id="underlayYLabel">0%</strong></label>
+              <label><span>透明度</span><input id="underlayOpacity" type="range" min="0.1" max="0.8" step="0.05" value="0.35"><strong id="underlayOpacityLabel">35%</strong></label>
+            </div>
+
+            <div class="underlay-lock-row">
+              <button id="underlayLockBtn" class="tool-btn" type="button">下絵を固定</button>
+              <button id="scrollLockBtn" class="tool-btn scroll-lock-btn" type="button">スクロールロック</button>
+            </div>
+            <p class="underlay-note">写真はこの端末だけで下絵として使います。PNGには下絵を含めません。</p>
+          </section>
+
+          <section class="control-section save-section">
+            <div class="section-label">作品</div>
+            <div class="save-row">
+              <input id="workTitle" class="title-input" maxlength="30" placeholder="作品の名前">
+              <button id="saveBtn" class="primary-btn">作品を保存</button>
+              <button id="pngBtn" class="secondary-btn">PNGで保存</button>
+            </div>
+            <p id="statusText" class="status" aria-live="polite"></p>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </section>
+
+  <section id="worksPanel" class="content-panel hidden">
+    <div class="panel-heading">
+      <div><h2>作品を見る</h2><p>この端末に保存した作品です。</p></div>
+    </div>
+    <div id="worksList" class="works-list"></div>
+  </section>
+</main>
+
+<script src="data/examples.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
