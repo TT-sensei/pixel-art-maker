@@ -6,11 +6,11 @@
 <header class="app-header"><div><p class="eyebrow">TT-sensei × edu-kit</p><h1>ピクセルアートメーカー</h1><p class="subtitle">1マスずつ、絵をつくろう。</p></div><button id="newBtn" class="ghost-btn">新しくつくる</button></header>
 <main class="app-shell">
 <section class="intro-card"><div><h2>つくってみよう</h2><p id="guideText">お手本を選んで、16×16のドット絵をまねしてみよう。</p></div><img class="navi-group" src="https://tt-sensei.github.io/navi-character-/assets/groups/group-standing.png" alt=""></section>
-<section class="mode-tabs"><button class="mode-tab active" data-mode="example">お手本から</button><button class="mode-tab" data-mode="free">自由につくる</button><button class="mode-tab" data-mode="works">作品を見る</button></section>
-<section id="examplePanel" class="content-panel"><div class="panel-heading"><div><h2>お手本セット</h2><p>16×16でつくりやすいものから選べます。</p></div><div id="categoryFilters" class="filters"></div></div><div id="exampleList" class="example-list"></div></section>
+<section class="mode-tabs"><button class="mode-tab active" data-mode="free">つくる</button><button class="mode-tab" data-mode="works">作品を見る</button></section>
+
 <section id="editorPanel" class="editor-layout hidden">
-<aside class="reference-card"><div class="section-label">お手本</div><div id="referenceCanvasWrap" class="reference-wrap"></div><div class="reference-info"><strong id="referenceTitle">自由につくる</strong><span id="referenceSize">16×16</span></div><button id="hideReferenceBtn" class="small-btn">お手本を隠す</button></aside>
-<section class="editor-card"><div class="editor-top"><div><div class="section-label">キャンバス</div><div class="canvas-meta"><strong id="sizeLabel">16×16</strong><span id="cellCount">256マス</span></div></div><div class="editor-actions"><button id="undoBtn" class="tool-btn">↶ もどす</button><button id="redoBtn" class="tool-btn">↷ やりなおす</button></div></div>
+
+<section class="editor-card"><div class="editor-top"><div><div class="section-label">キャンバス</div><div class="canvas-meta"><strong id="sizeLabel">16×16</strong><span id="cellCount">256マス</span></div></div><div class="size-actions"><button id="decreaseSizeBtn" class="tool-btn">− マスを減らす</button><button id="increaseSizeBtn" class="tool-btn">＋ マスを増やす</button></div><div class="editor-actions"><button id="undoBtn" class="tool-btn">↶ もどす</button><button id="redoBtn" class="tool-btn">↷ やりなおす</button></div></div>
 <div class="canvas-stage"><canvas id="pixelCanvas" aria-label="ピクセルアートキャンバス"></canvas></div>
 <div class="tools"><button class="tool-btn active" data-tool="draw">✎ 描く</button><button class="tool-btn" data-tool="erase">消す</button><button class="tool-btn" data-tool="fill">塗る</button><button class="tool-btn" data-tool="picker">色をひろう</button><button id="mirrorBtn" class="tool-btn">左右対称</button></div>
 <div class="palette-area"><div class="section-label">色</div><div id="palette" class="palette"></div><label class="custom-color">自分の色 <input id="colorInput" type="color" value="#111827"></label></div>
