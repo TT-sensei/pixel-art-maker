@@ -1,7 +1,7 @@
 (() => {
 const KEY="tt_pixel_art_maker_v1",canvas=document.getElementById("pixelCanvas"),ctx=canvas.getContext("2d");
 const $=id=>document.getElementById(id);
-const state={size:16,pixels:[],color:PIXEL_PALETTE[0],tool:"draw",mirror:false,history:[],future:[],underlay:null,underlayVisible:false,underlayOpacity:.35,underlayUrl:null,underlayScale:1,underlayX:0,underlayY:0};
+const state={size:16,pixels:[],color:PIXEL_PALETTE[0],tool:"draw",mirror:false,history:[],future:[],underlay:null,underlayVisible:false,underlayOpacity:.35,underlayUrl:null,underlayScale:1,underlayX:0,underlayY:0,underlayLocked:false};
 const blank=()=>Array(state.size*state.size).fill(null);
 function resize(){const s=Math.max(160,Math.floor(Math.min(canvas.parentElement.clientWidth-12,canvas.parentElement.clientHeight-12)));canvas.width=s;canvas.height=s;draw()}
 function draw(){const n=state.size,s=canvas.width/n;ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -28,17 +28,18 @@ $("decreaseSizeBtn").onclick=()=>changeSize(state.size-8);
 $("undoBtn").onclick=()=>{if(state.history.length){state.future.push(state.pixels.slice());state.pixels=state.history.pop();draw()}};
 $("redoBtn").onclick=()=>{if(state.future.length){state.history.push(state.pixels.slice());state.pixels=state.future.pop();draw()}};
 $("colorInput").oninput=e=>{state.color=e.target.value;state.tool="draw";palette();tools()};
-$("underlayInput").onchange=e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(state.underlayUrl)URL.revokeObjectURL(state.underlayUrl);state.underlayUrl=URL.createObjectURL(file);const img=new Image();img.onload=()=>{state.underlay=img;state.underlayVisible=true;$("underlayToggleBtn").textContent="下絵を非表示";draw();$("statusText").textContent="写真を下絵にしました。"};img.src=state.underlayUrl};
+$("underlayInput").onchange=e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(state.underlayUrl)URL.revokeObjectURL(state.underlayUrl);state.underlayUrl=URL.createObjectURL(file);const img=new Image();img.onload=()=>{state.underlay=img;state.underlayVisible=true;state.underlayScale=1;state.underlayX=0;state.underlayY=0;state.underlayLocked=false;$("underlayScale").value=1;$("underlayX").value=0;$("underlayY").value=0;$("underlayScaleLabel").textContent="100%";$("underlayXLabel").textContent="0";$("underlayYLabel").textContent="0";$("underlayLockBtn").textContent="下絵を固定";$("underlayToggleBtn").textContent="下絵を非表示";draw();$("statusText").textContent="写真を下絵にしました。"};img.src=state.underlayUrl};
 $("underlayToggleBtn").onclick=()=>{if(!state.underlay)return;state.underlayVisible=!state.underlayVisible;$("underlayToggleBtn").textContent=state.underlayVisible?"下絵を非表示":"下絵を表示";draw()};
 $("underlayClearBtn").onclick=()=>{if(state.underlayUrl)URL.revokeObjectURL(state.underlayUrl);state.underlay=null;state.underlayUrl=null;state.underlayVisible=false;$("underlayInput").value="";$("underlayToggleBtn").textContent="下絵を表示";draw();$("statusText").textContent="下絵を消しました。"};
 $("underlayOpacity").oninput=e=>{state.underlayOpacity=Number(e.target.value);$("underlayOpacityLabel").textContent=Math.round(state.underlayOpacity*100)+"%";draw()};
-$("underlayScale").oninput=e=>{state.underlayScale=Number(e.target.value);$("underlayScaleLabel").textContent=Math.round(state.underlayScale*100)+"%";draw()};
-$("underlayX").oninput=e=>{state.underlayX=Number(e.target.value);$("underlayXLabel").textContent=Math.round(state.underlayX*100);draw()};
-$("underlayY").oninput=e=>{state.underlayY=Number(e.target.value);$("underlayYLabel").textContent=Math.round(state.underlayY*100);draw()};
-$("scrollLockBtn").onclick=()=>{document.body.classList.toggle("scroll-locked");$("scrollLockBtn").textContent=document.body.classList.contains("scroll-locked")?"スクロールロック中":"スクロールロック"};
+$("underlayScale").oninput=e=>{if(state.underlayLocked)return;state.underlayScale=Number(e.target.value);$("underlayScaleLabel").textContent=Math.round(state.underlayScale*100)+"%";draw()};
+$("underlayX").oninput=e=>{if(state.underlayLocked)return;state.underlayX=Number(e.target.value);$("underlayXLabel").textContent=Math.round(state.underlayX*100);draw()};
+$("underlayY").oninput=e=>{if(state.underlayLocked)return;state.underlayY=Number(e.target.value);$("underlayYLabel").textContent=Math.round(state.underlayY*100);draw()};
+$("underlayLockBtn").onclick=()=>{if(!state.underlay)return;state.underlayLocked=!state.underlayLocked;["underlayScale","underlayX","underlayY"].forEach(id=>$(id).disabled=state.underlayLocked);$("underlayLockBtn").textContent=state.underlayLocked?"下絵の固定を解除":"下絵を固定"};
+$("scrollLockBtn").onclick=()=>{document.body.classList.toggle("scroll-locked");const locked=document.body.classList.contains("scroll-locked");$("scrollLockBtn").textContent=locked?"スクロールロック中":"スクロールロック"};
 $("saveBtn").onclick=()=>{const a=JSON.parse(localStorage.getItem(KEY)||"[]");a.unshift({id:Date.now(),title:$("workTitle").value.trim()||"わたしのピクセルアート",size:state.size,pixels:state.pixels.slice()});localStorage.setItem(KEY,JSON.stringify(a.slice(0,30)));$("statusText").textContent="作品をこの端末に保存しました。";works()};
 $("pngBtn").onclick=()=>{const out=document.createElement("canvas"),scale=Math.max(8,Math.floor(512/state.size));out.width=out.height=state.size*scale;const x=out.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,out.width,out.height);state.pixels.forEach((v,i)=>{if(v){x.fillStyle=v;x.fillRect(i%state.size*scale,Math.floor(i/state.size)*scale,scale,scale)}});const a=document.createElement("a");a.download=($("workTitle").value.trim()||"pixel-art")+".png";a.href=out.toDataURL("image/png");a.click();$("statusText").textContent="PNGを書き出しました。"};
 $("newBtn").onclick=start;
 document.querySelectorAll(".mode-tab").forEach(b=>b.onclick=()=>{const m=b.dataset.mode;if(m==="free"){start()}else{$("editorPanel").classList.add("hidden");$("worksPanel").classList.remove("hidden");works()}document.querySelectorAll(".mode-tab").forEach(t=>t.classList.toggle("active",t===b))});
-palette();start();
+let scrollLocked=false;document.addEventListener("touchmove",e=>{if(document.body.classList.contains("scroll-locked"))e.preventDefault()},{passive:false});palette();start();
 })();
