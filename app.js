@@ -43,5 +43,8 @@ $("saveBtn").onclick=()=>{const a=JSON.parse(localStorage.getItem(KEY)||"[]"),ti
 $("pngBtn").onclick=()=>{const out=document.createElement("canvas"),scale=Math.max(8,Math.floor(512/state.size));out.width=out.height=state.size*scale;const x=out.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,out.width,out.height);state.pixels.forEach((v,i)=>{if(v){x.fillStyle=v;x.fillRect(i%state.size*scale,Math.floor(i/state.size)*scale,scale,scale)}});const filename=($("workTitle").value.trim()||"pixel-art")+".png";out.toBlob(blob=>{if(!blob){$("statusText").textContent="PNGの作成に失敗しました。";return}const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;a.rel="noopener";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$("statusText").textContent="PNGを書き出しました。"},"image/png")};
 $("newBtn").onclick=start;
 document.querySelectorAll(".mode-tab").forEach(b=>b.onclick=()=>{const m=b.dataset.mode;if(m==="free"){start()}else{$("editorPanel").classList.add("hidden");$("worksPanel").classList.remove("hidden");works()}document.querySelectorAll(".mode-tab").forEach(t=>t.classList.toggle("active",t===b))});
-document.addEventListener("touchmove",e=>{if(document.body.classList.contains("scroll-locked")&&!e.target.closest(".underlay-options"))e.preventDefault()},{passive:false});palette();start();
+document.addEventListener("touchmove",e=>{if(document.body.classList.contains("scroll-locked")&&!e.target.closest(".underlay-options"))e.preventDefault()},{passive:false});palette();
+window.addEventListener("resize",resize,{passive:true});
+if("ResizeObserver" in window){new ResizeObserver(()=>resize()).observe(canvas.parentElement);}
+start();
 })();
