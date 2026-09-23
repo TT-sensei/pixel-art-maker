@@ -7,3 +7,9 @@
 .underlay-options input{width:min(260px,55vw);accent-color:var(--accent)}
 .underlay-note{margin:7px 0 0;color:var(--muted);font-size:12px}
 @media(max-width:680px){.underlay-controls .tool-btn,.file-btn{flex:1;min-width:100px}.underlay-options input{flex:1}}
+
+.underlay-options{display:grid;gap:7px}
+.underlay-options label{display:grid;grid-template-columns:44px minmax(120px,260px) 42px;align-items:center;gap:8px}
+.scroll-lock-btn{margin-top:9px}
+body.scroll-locked{overflow:hidden;overscroll-behavior:none}
+.canvas-stage{overscroll-behavior:none}
