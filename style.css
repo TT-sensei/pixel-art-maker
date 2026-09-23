@@ -13,3 +13,5 @@
 .scroll-lock-btn{margin-top:9px}
 body.scroll-locked{overflow:hidden;overscroll-behavior:none}
 .canvas-stage{overscroll-behavior:none}
+
+.underlay-lock-row{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.underlay-lock-row .tool-btn{flex:1}.underlay-options input:disabled{opacity:.5}.canvas-stage{touch-action:none}
