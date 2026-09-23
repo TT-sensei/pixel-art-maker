@@ -1,11 +1,11 @@
 (() => {
 const KEY="tt_pixel_art_maker_v1",canvas=document.getElementById("pixelCanvas"),ctx=canvas.getContext("2d");
 const $=id=>document.getElementById(id);
-const state={size:16,pixels:[],color:PIXEL_PALETTE[0],tool:"draw",mirror:false,history:[],future:[],underlay:null,underlayVisible:false,underlayOpacity:.35,underlayUrl:null};
+const state={size:16,pixels:[],color:PIXEL_PALETTE[0],tool:"draw",mirror:false,history:[],future:[],underlay:null,underlayVisible:false,underlayOpacity:.35,underlayUrl:null,underlayScale:1,underlayX:0,underlayY:0};
 const blank=()=>Array(state.size*state.size).fill(null);
 function resize(){const s=Math.max(160,Math.floor(Math.min(canvas.parentElement.clientWidth-12,canvas.parentElement.clientHeight-12)));canvas.width=s;canvas.height=s;draw()}
 function draw(){const n=state.size,s=canvas.width/n;ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
-if(state.underlay&&state.underlayVisible){ctx.save();ctx.globalAlpha=state.underlayOpacity;const iw=state.underlay.naturalWidth,ih=state.underlay.naturalHeight,scale=Math.max(canvas.width/iw,canvas.height/ih),dw=iw*scale,dh=ih*scale;ctx.drawImage(state.underlay,(canvas.width-dw)/2,(canvas.height-dh)/2,dw,dh);ctx.restore()}
+if(state.underlay&&state.underlayVisible){ctx.save();ctx.globalAlpha=state.underlayOpacity;const iw=state.underlay.naturalWidth,ih=state.underlay.naturalHeight,base=Math.max(canvas.width/iw,canvas.height/ih),scale=base*state.underlayScale,dw=iw*scale,dh=ih*scale;ctx.drawImage(state.underlay,(canvas.width-dw)/2+state.underlayX*canvas.width,(canvas.height-dh)/2+state.underlayY*canvas.height,dw,dh);ctx.restore()}
 state.pixels.forEach((c,i)=>{if(c){ctx.fillStyle=c;ctx.fillRect((i%n)*s,Math.floor(i/n)*s,s,s)}});ctx.strokeStyle="rgba(71,85,105,.28)";for(let i=0;i<=n;i++){const p=Math.round(i*s)+.5;ctx.beginPath();ctx.moveTo(p,0);ctx.lineTo(p,canvas.height);ctx.stroke();ctx.beginPath();ctx.moveTo(0,p);ctx.lineTo(canvas.width,p);ctx.stroke()}}
 function point(e){const r=canvas.getBoundingClientRect(),n=state.size;return{x:Math.max(0,Math.min(n-1,Math.floor((e.clientX-r.left)/r.width*n))),y:Math.max(0,Math.min(n-1,Math.floor((e.clientY-r.top)/r.height*n)))}} 
 function history(){state.history.push(state.pixels.slice());if(state.history.length>40)state.history.shift();state.future=[]}
@@ -32,6 +32,10 @@ $("underlayInput").onchange=e=>{const file=e.target.files&&e.target.files[0];if(
 $("underlayToggleBtn").onclick=()=>{if(!state.underlay)return;state.underlayVisible=!state.underlayVisible;$("underlayToggleBtn").textContent=state.underlayVisible?"下絵を非表示":"下絵を表示";draw()};
 $("underlayClearBtn").onclick=()=>{if(state.underlayUrl)URL.revokeObjectURL(state.underlayUrl);state.underlay=null;state.underlayUrl=null;state.underlayVisible=false;$("underlayInput").value="";$("underlayToggleBtn").textContent="下絵を表示";draw();$("statusText").textContent="下絵を消しました。"};
 $("underlayOpacity").oninput=e=>{state.underlayOpacity=Number(e.target.value);$("underlayOpacityLabel").textContent=Math.round(state.underlayOpacity*100)+"%";draw()};
+$("underlayScale").oninput=e=>{state.underlayScale=Number(e.target.value);$("underlayScaleLabel").textContent=Math.round(state.underlayScale*100)+"%";draw()};
+$("underlayX").oninput=e=>{state.underlayX=Number(e.target.value);$("underlayXLabel").textContent=Math.round(state.underlayX*100);draw()};
+$("underlayY").oninput=e=>{state.underlayY=Number(e.target.value);$("underlayYLabel").textContent=Math.round(state.underlayY*100);draw()};
+$("scrollLockBtn").onclick=()=>{document.body.classList.toggle("scroll-locked");$("scrollLockBtn").textContent=document.body.classList.contains("scroll-locked")?"スクロールロック中":"スクロールロック"};
 $("saveBtn").onclick=()=>{const a=JSON.parse(localStorage.getItem(KEY)||"[]");a.unshift({id:Date.now(),title:$("workTitle").value.trim()||"わたしのピクセルアート",size:state.size,pixels:state.pixels.slice()});localStorage.setItem(KEY,JSON.stringify(a.slice(0,30)));$("statusText").textContent="作品をこの端末に保存しました。";works()};
 $("pngBtn").onclick=()=>{const out=document.createElement("canvas"),scale=Math.max(8,Math.floor(512/state.size));out.width=out.height=state.size*scale;const x=out.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,out.width,out.height);state.pixels.forEach((v,i)=>{if(v){x.fillStyle=v;x.fillRect(i%state.size*scale,Math.floor(i/state.size)*scale,scale,scale)}});const a=document.createElement("a");a.download=($("workTitle").value.trim()||"pixel-art")+".png";a.href=out.toDataURL("image/png");a.click();$("statusText").textContent="PNGを書き出しました。"};
 $("newBtn").onclick=start;
