@@ -15,3 +15,5 @@ body.scroll-locked{overflow:hidden;overscroll-behavior:none}
 .canvas-stage{overscroll-behavior:none}
 
 .underlay-lock-row{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.underlay-lock-row .tool-btn{flex:1}.underlay-options input:disabled{opacity:.5}.canvas-stage{touch-action:none}
+
+.work-actions{display:flex;gap:6px;margin-top:9px}.work-actions button{flex:1;min-height:38px}.work-delete{color:#9b2c2c!important}@media(max-width:680px){.work-actions{flex-direction:column}}
